@@ -3,7 +3,7 @@ wpt = WordPunctTokenizer()
 
 PUNKT = list(".,:;-")
 
-def join(tokens = ['очень', 'длинная', 'строка', ',', 'с', 'пробелами', ',', 'и', 'знаками', 'препинания']):
+def join(tokens=['очень', 'длинная', 'строка', ',', 'с', 'пробелами', ',', 'и', 'знаками', 'препинания']):
 	rez = []
 	for i in range(len(tokens)):
 		token = tokens[i]
@@ -13,7 +13,7 @@ def join(tokens = ['очень', 'длинная', 'строка', ',', 'с', '�
 			rez += [token]
 	return rez
 
-def wrap(_str = "очень длинная строка,с пробелами, и знаками препинания"):
+def wrap(_str="очень длинная строка,с пробелами, и знаками препинания"):
 	_len = 0
 	rez = ""
 	for token in join(wpt.tokenize(_str)):
@@ -24,7 +24,8 @@ def wrap(_str = "очень длинная строка,с пробелами, �
 			_len = 0
 	return rez.strip()
 
-if __name__ == '__main__':
+
+def generate():
 	import sys
 	lines = [ _.strip(" \n").strip(';') for _ in open(sys.argv[1]).readlines() ]
 	print("digraph g {\n\trankdir = LR\n")
@@ -39,3 +40,6 @@ if __name__ == '__main__':
 			except ValueError:
 				pass
 	print("}")
+	
+if __name__ == '__main__':
+	pass
