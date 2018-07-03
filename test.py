@@ -4,7 +4,8 @@ from text2dot import \
 	pair, \
 	triplet, \
 	get_objects_and_rels, \
-	collect_objects_and_rels
+	collect_objects_and_rels, \
+	fuzzy_triplets
 
 if __name__ == '__main__':
 	print(wrap())
@@ -13,3 +14,8 @@ if __name__ == '__main__':
 	print(triplet())
 	print(get_objects_and_rels())
 	print(collect_objects_and_rels())
+	print(fuzzy_triplets([('пирвет', 'тибе', 'привет'),
+						  ('корвет', 'литит', 'кирвет'),
+						  ('кювет', 'пропал', 'бювет'), ],
+						 ['привет', 'корвет', 'кювет', 'бювет', ],
+						 ['тебе', 'летит', 'пропан', ]))

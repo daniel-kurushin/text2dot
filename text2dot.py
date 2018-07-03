@@ -57,16 +57,16 @@ def get_objects_and_rels(line='Поворот в другую сторону;Н�
 	else:
 		return long(parts)
 
+def compare(S1, S2):
+	ngrams = [S1[i:i + 3] for i in range(len(S1))]
+	count = 0
+	for ngram in ngrams:
+		count += S2.count(ngram)
+
+	return count / max(len(S1), len(S2)) > 0.65
+
 def fuzzy_unique(_list):
 	def fuzzy_compare(X, y):
-		def compare(S1, S2):
-			ngrams = [S1[i:i + 3] for i in range(len(S1))]
-			count = 0
-			for ngram in ngrams:
-				count += S2.count(ngram)
-
-			return count / max(len(S1), len(S2)) > 0.65
-
 		for x in X:
 			if compare(x, y):
 				return True
@@ -78,8 +78,20 @@ def fuzzy_unique(_list):
 			rez += [y]
 	return rez
 
-def fuzzy_triplets(triples, objects, rels):
-	return triples
+def fuzzy_triplets(triplets, objects, rels):
+	def fuzzy_find(_item, _list):
+		for i in _list:
+			if compare(i, _item):
+				return i
+		return _item
+	
+	rez = []
+	for s, r, o  in triplets:
+		s1 = fuzzy_find(s, objects) 
+		o1 = fuzzy_find(o, objects)
+		r1 = fuzzy_find(r, rels)
+		rez += [(s1, r1, o1)]
+	return rez
 
 def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
 	objects = []
@@ -88,7 +100,7 @@ def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c',
 	rels = fuzzy_unique([ x[1] for x in triplets ])
 	triplets = fuzzy_triplets(triplets, objects, rels) 
 	
-	return objects, rels
+	return triplets
 
 
 def generate():
