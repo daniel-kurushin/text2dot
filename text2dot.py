@@ -45,7 +45,12 @@ def long(parts=['a', 'r1', 'b', 'r2', 'c', 'r3', 'd']):
 		if not triplet:
 			break
 		else:
-			rez += [triplet]
+			if len(triplet) == 3:
+				rez += [triplet]
+			elif len(triplet) == 2:
+				rez += [(triplet[0], '', triplet[1])]
+			else:
+				pass
 	return rez
 
 def get_objects_and_rels(line='Поворот в другую сторону;Не повернулся;Подать звуковой сигнал, ожидание;Объект ушел;Робот стоит на месте, определяет положение в пространстве(начальное состояние);Робот находится в выделенно области'):
@@ -63,7 +68,11 @@ def compare(S1, S2):
 	for ngram in ngrams:
 		count += S2.count(ngram)
 
-	return count / max(len(S1), len(S2)) > 0.65
+	try:
+		rez = count / max(len(S1), len(S2)) > 0.65
+	except ZeroDivisionError:
+		rez = 0
+	return rez
 
 def fuzzy_unique(_list):
 	def fuzzy_compare(X, y):
@@ -119,5 +128,21 @@ def generate():
 				pass
 	print("}")
 	
+def main(file):
+	lines = [ x.strip(" \n").strip(';') for x in open(file).readlines() ]
+	triplets = []
+	for line in lines:
+		triplets += get_objects_and_rels(line)
+	triplets = collect_objects_and_rels(triplets)
+	print("digraph g {\n\trankdir = LR\n")
+	for s, r, o in triplets:
+		print('\t"%s" -> "%s" [label="%s"]' % (wrap(s), wrap(o), wrap(r)))
+	print("}")
+	
 if __name__ == '__main__':
+	import sys
+	try:
+		main(sys.argv[1])
+	except FileNotFoundError:
+		print('e')
 	pass
