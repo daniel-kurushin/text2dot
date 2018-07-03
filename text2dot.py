@@ -58,17 +58,27 @@ def get_objects_and_rels(line='Поворот в другую сторону;Н�
 		return long(parts)
 
 def fuzzy_unique(_list):
+	def fuzzy_compare(X, y):
+		def compare(S1, S2):
+			ngrams = [S1[i:i + 3] for i in range(len(S1))]
+			count = 0
+			for ngram in ngrams:
+				count += S2.count(ngram)
+
+			return count / max(len(S1), len(S2)) > 0.65
+
+		for x in X:
+			if compare(x, y):
+				return True
+		return False
+
 	rez = []
 	for y in _list:
 		if not fuzzy_compare(rez, y):
 			rez += [y]
 	return rez
 
-def fuzzy_compare(X, y):
-	for x in X:
-		if x == y:
-			return True
-	return False
+
 
 def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
 	objects = []
