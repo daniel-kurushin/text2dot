@@ -78,13 +78,15 @@ def fuzzy_unique(_list):
 			rez += [y]
 	return rez
 
-
+def fuzzy_triplets(triples, objects, rels):
+	return triples
 
 def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
 	objects = []
 	rels = []
 	objects = fuzzy_unique([ x[0] for x in triplets ] + [ x[2] for x in triplets ])
 	rels = fuzzy_unique([ x[1] for x in triplets ])
+	triplets = fuzzy_triplets(triplets, objects, rels) 
 	
 	return objects, rels
 
