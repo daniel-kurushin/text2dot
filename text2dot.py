@@ -40,7 +40,7 @@ def long(parts=['a', 'r1', 'b', 'r2', 'c', 'r3', 'd']):
 	n = 0
 	rez = []
 	while 1:
-		triplet = parts[n:n + 3]
+		triplet = tuple(parts[n:n + 3])
 		n += 2
 		if not triplet:
 			break
@@ -57,6 +57,26 @@ def get_objects_and_rels(line='Поворот в другую сторону;Н�
 	else:
 		return long(parts)
 
+def fuzzy_unique(_list):
+	rez = []
+	for y in _list:
+		if not fuzzy_compare(rez, y):
+			rez += [y]
+	return rez
+
+def fuzzy_compare(X, y):
+	for x in X:
+		if x == y:
+			return True
+	return False
+
+def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
+	objects = []
+	rels = []
+	objects = fuzzy_unique([ x[0] for x in triplets ] + [ x[2] for x in triplets ])
+	rels = fuzzy_unique([ x[1] for x in triplets ])
+	
+	return objects, rels
 
 
 def generate():
