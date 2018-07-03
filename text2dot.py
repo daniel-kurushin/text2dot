@@ -30,6 +30,24 @@ def wrap(_str="очень длинная строка,с пробелами, и 
 			_len = 0
 	return "\n".join(rez)
 
+def pair(parts=['a', 'b']):
+	return (parts[0], '', parts[1])
+
+def triplet(parts=['a', 'r', 'b']):
+	return (parts[0], parts[1], parts[2])
+
+def get_objects_and_rels(line='Поворот в другую сторону;Не повернулся;Подать звуковой сигнал, ожидание;Объект ушел;Робот стоит на месте, определяет положение в пространстве(начальное состояние);Робот находится в выделенно области'):
+	parts = line.split(';')
+	if len(parts) == 2:
+		return [pair(parts)]
+	elif len(parts) == 3:
+		return [triplet(parts)]
+	else:
+		return long(parts)
+# 	return [
+# 		[o, r, o],
+# 	]
+
 
 def generate():
 	import sys
