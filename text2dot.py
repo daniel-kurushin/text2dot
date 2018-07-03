@@ -36,6 +36,18 @@ def pair(parts=['a', 'b']):
 def triplet(parts=['a', 'r', 'b']):
 	return (parts[0], parts[1], parts[2])
 
+def long(parts=['a', 'r1', 'b', 'r2', 'c', 'r3', 'd']):
+	n = 0
+	rez = []
+	while 1:
+		triplet = parts[n:n + 3]
+		n += 2
+		if not triplet:
+			break
+		else:
+			rez += [triplet]
+	return rez
+
 def get_objects_and_rels(line='Поворот в другую сторону;Не повернулся;Подать звуковой сигнал, ожидание;Объект ушел;Робот стоит на месте, определяет положение в пространстве(начальное состояние);Робот находится в выделенно области'):
 	parts = line.split(';')
 	if len(parts) == 2:
@@ -44,9 +56,7 @@ def get_objects_and_rels(line='Поворот в другую сторону;Н�
 		return [triplet(parts)]
 	else:
 		return long(parts)
-# 	return [
-# 		[o, r, o],
-# 	]
+
 
 
 def generate():
