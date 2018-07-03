@@ -15,14 +15,20 @@ def join(tokens=['очень', 'длинная', 'строка', ',', 'с', 'п�
 
 def wrap(_str="очень длинная строка,с пробелами, и знаками препинания"):
 	_len = 0
-	rez = ""
+	rez = []
+	is_first_word = True
 	for token in join(wpt.tokenize(_str)):
 		_len += len(token)
-		rez += " " + token
-		if _len > 20:
-			rez += "\n"
+		
+		if is_first_word:
+			rez = [token]
+			is_first_word = False
+		elif _len < 20:
+			rez[-1] += " %s" % token
+		else:
+			rez += [token]
 			_len = 0
-	return rez.strip()
+	return "\n".join(rez)
 
 
 def generate():
