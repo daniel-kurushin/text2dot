@@ -102,32 +102,57 @@ def fuzzy_triplets(triplets, objects, rels):
 		rez += [(s1, r1, o1)]
 	return rez
 
+def cross_check(triplets):
+	dO, dR = {}, {}
+	O = [ x[0] for x in triplets ] + [ x[2] for x in triplets ]
+	R = [ x[1] for x in triplets ]
+	for o in O:
+		for r in R:
+			if compare(o, r):
+				try:
+					dR[o] += 1 
+				except KeyError:
+					dR[o] = 1 
+	for r in R:
+		for r in R:
+			if compare(o, r):
+				try:
+					dO[r] += 1 
+				except KeyError:
+					dO[r] = 1
+					
+	for i in dO.keys():
+		for s, r, o in triplets:
+			if r == i:
+				print(1, s, r, o) 
+	for i in dR.keys():
+		for s, r, o in triplets:
+			if s == i or o == i:
+				print(2, s, r, o) 
+
+	exit(0) 
+	
+def make_triplet_dict(triplets=[('a', 'r1', 'b'), ('a', 'r1', 'b'), ('b', 'r2', 'c'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
+	rez = {}
+	for triplet in triplets:
+		try:
+			rez[triplet] += 1
+		except KeyError:
+			rez[triplet] = 1
+	return rez
+
 def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
 	objects = []
 	rels = []
 	objects = fuzzy_unique([ x[0] for x in triplets ] + [ x[2] for x in triplets ])
 	rels = fuzzy_unique([ x[1] for x in triplets ])
 	triplets = fuzzy_triplets(triplets, objects, rels) 
+	triplets_dict = make_triplet_dict(triplets)
+# 	triplets = cross_check(triplets) 
 	
 	return triplets
 
 
-def generate():
-	import sys
-	lines = [ _.strip(" \n").strip(';') for _ in open(sys.argv[1]).readlines() ]
-	print("digraph g {\n\trankdir = LR\n")
-	for line in lines:
-		try:
-			_from, _to, _rel = [ wrap(_.strip()) for _ in line.split(";") ]
-			print('\t"%s" -> "%s" [label="%s"]' % (_from, _to, _rel))
-		except ValueError:
-			try:
-				_from, _to = [ wrap(_.strip()) for _ in line.split(";") ]
-				print('\t"%s" -> "%s"' % (_from, _to))
-			except ValueError:
-				pass
-	print("}")
-	
 def main(file):
 	lines = [ x.strip(" \n").strip(';') for x in open(file).readlines() ]
 	triplets = []
