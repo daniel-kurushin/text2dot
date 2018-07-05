@@ -1,4 +1,6 @@
 from nltk.tokenize import WordPunctTokenizer
+import sys
+
 wpt = WordPunctTokenizer()
 
 PUNKT = list(".,:;-")
@@ -102,10 +104,10 @@ def fuzzy_triplets(triplets, objects, rels):
 		rez += [(s1, r1, o1)]
 	return rez
 
-def cross_check(triplets):
+def cross_check(triplets_dict):
 	dO, dR = {}, {}
-	O = [ x[0] for x in triplets ] + [ x[2] for x in triplets ]
-	R = [ x[1] for x in triplets ]
+	O = [ x[0] for x in triplets_dict ] + [ x[2] for x in triplets_dict ]
+	R = [ x[1] for x in triplets_dict ]
 	for o in O:
 		for r in R:
 			if compare(o, r):
@@ -121,18 +123,24 @@ def cross_check(triplets):
 				except KeyError:
 					dO[r] = 1
 					
+	to_del = []
 	for i in dO.keys():
-		for s, r, o in triplets:
+		for s, r, o in triplets_dict:
 			if r == i:
-				print(1, s, r, o) 
+				print("Wrong triplet found:", s, r, o, file=sys.stderr)
+				to_del += [(s, r, o)] 
 	for i in dR.keys():
-		for s, r, o in triplets:
+		for s, r, o in triplets_dict:
 			if s == i or o == i:
-				print(2, s, r, o) 
-
-	exit(0) 
+				print("Wrong triplet found:", s, r, o, file=sys.stderr) 
+				to_del += [(s, r, o)] 
 	
-def make_triplet_dict(triplets=[('a', 'r1', 'b'), ('a', 'r1', 'b'), ('b', 'r2', 'c'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
+	for i in to_del:
+		triplets_dict.pop(i)
+		
+	return triplets_dict 
+	
+def make_dict(triplets=[('a', 'r1', 'b'), ('a', 'r1', 'b'), ('b', 'r2', 'c'), ('b', 'r2', 'c'), ('c', 'r3', 'd')]):
 	rez = {}
 	for triplet in triplets:
 		try:
@@ -147,10 +155,10 @@ def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c',
 	objects = fuzzy_unique([ x[0] for x in triplets ] + [ x[2] for x in triplets ])
 	rels = fuzzy_unique([ x[1] for x in triplets ])
 	triplets = fuzzy_triplets(triplets, objects, rels) 
-	triplets_dict = make_triplet_dict(triplets)
-# 	triplets = cross_check(triplets) 
+	triplets_dict = make_dict(triplets)
+	triplets_dict = cross_check(triplets_dict) 
 	
-	return triplets
+	return triplets_dict
 
 
 def main(file):
@@ -158,14 +166,15 @@ def main(file):
 	triplets = []
 	for line in lines:
 		triplets += get_objects_and_rels(line)
-	triplets = collect_objects_and_rels(triplets)
+	triplets_dict = collect_objects_and_rels(triplets)
 	print("digraph g {\n\trankdir = LR\n")
-	for s, r, o in triplets:
-		print('\t"%s" -> "%s" [label="%s"]' % (wrap(s), wrap(o), wrap(r)))
+	for triplet in triplets_dict:
+		s, r, o = triplet
+		w = triplets_dict[triplet]
+		print('\t"%s" -> "%s" [label="%s", penwidth="%s"]' % (wrap(s), wrap(o), wrap(r), w))
 	print("}")
 	
 if __name__ == '__main__':
-	import sys
 	try:
 		main(sys.argv[1])
 	except FileNotFoundError:
