@@ -29,7 +29,7 @@ def wrap(_str="очень длинная строка,с пробелами, и 
 		else:
 			rez += [token]
 			_len = 0
-	rez = "\\n".join(rez).replace(" )", ")").replace("( ", "(")
+	rez = "\\n".join(rez).replace(" )", ")").replace("( ", "(").strip()
 	return rez
 
 def compare(S1, S2):

@@ -121,7 +121,7 @@ def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c',
 
 
 
-def generate_graph(triplets_dict):
+def generate_graph(node_shapes, triplets_dict):
 	out = "digraph g {\n\trankdir = LR\n"
 	for triplet in triplets_dict:
 		s, r, o = triplet
