@@ -164,22 +164,29 @@ def collect_objects_and_rels(triplets=[('a', 'r1', 'b'), ('b', 'r2', 'c'), ('c',
 	return triplets_dict
 
 
+
+def generate_graph(triplets_dict):
+	out = "digraph g {\n\trankdir = LR\n"
+	for triplet in triplets_dict:
+		s, r, o = triplet
+		w = triplets_dict[triplet]
+		out += '\t"%s" -> "%s" [label="%s", penwidth="%s"]\n' % (wrap(s), wrap(o), wrap(r), w)
+		
+	out += "}\n"
+	return out
+
 def main(file):
 	lines = [ x.strip(" \n").strip(';') for x in open(file).readlines() ]
 	triplets = []
 	for line in lines:
 		triplets += get_objects_and_rels(line)
 	triplets_dict = collect_objects_and_rels(triplets)
-	print("digraph g {\n\trankdir = LR\n")
-	for triplet in triplets_dict:
-		s, r, o = triplet
-		w = triplets_dict[triplet]
-		print('\t"%s" -> "%s" [label="%s", penwidth="%s"]' % (wrap(s), wrap(o), wrap(r), w))
-	print("}")
+
+	return generate_graph(triplets_dict)
 	
 if __name__ == '__main__':
 	try:
-		main(sys.argv[1])
+		print(main(sys.argv[1]))
 	except FileNotFoundError:
 		print('e')
 	pass
