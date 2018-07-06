@@ -5,6 +5,8 @@ wpt = WordPunctTokenizer()
 
 PUNKT = list(".,:;-")
 
+# https://yandex.ru/images/search?text=%D0%BF%D0%BE%D0%B4%D0%BD%D1%8F%D1%82%D1%8C%20%D1%80%D1%83%D0%BA%D0%B8&isize=small&type=lineart&itype=png
+
 def join(tokens=['очень', 'длинная', 'строка', ',', 'с', 'пробелами', ',', 'и', 'знаками', 'препинания']):
 	rez = []
 	for i in range(len(tokens)):
@@ -30,7 +32,8 @@ def wrap(_str="очень длинная строка,с пробелами, и 
 		else:
 			rez += [token]
 			_len = 0
-	return "\n".join(rez)
+	rez = "\\n".join(rez).replace(" )", ")").replace("( ", "(")
+	return rez
 
 def pair(parts=['a', 'b']):
 	return (parts[0], '', parts[1])
