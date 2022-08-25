@@ -44,3 +44,10 @@ def compare(S1, S2):
 		rez = 0
 	return rez
 
+synonyms = [
+	["составляющих его", "входящих в него", "содержащихся в нем"],
+	["изучает", "исследует", "описывает", "характеризует"],
+]
+
+url = 'https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D1%86%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F'
+
